@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from mysite import models
+from mysite import models, forms
+from django.core.mail import EmailMessage
 
 # Create your views here.
 def index(request):
@@ -30,10 +31,10 @@ def listing(request):
 def posting(request):
 	moods = models.Mood.objects.all()
 	try:
-		user_id = request.GET['user_id']
-		user_pass = request.GET['user_pass']
-		user_post = request.GET['user_post']
-		user_mood = request.GET['mood']
+		user_id = request.POST['user_id']
+		user_pass = request.POST['user_pass']
+		user_post = request.POST['user_post']
+		user_mood = request.POST['mood']
 	except:
 		user_id = None
 		message = '如要張貼訊息，則每一欄都要填寫...'
@@ -45,3 +46,45 @@ def posting(request):
 		message='儲存成功! 請記得你的編輯密碼 [{}]!，訊息審查後才會顯示。'.format(user_pass)
 		
 	return render(request, 'posting.html', locals())
+
+
+def contact(request):
+	if request.method == 'POST':
+		form = forms.ContactForm(request.POST)
+		if form.is_valid():
+			message = "感謝您的來信"
+			user_name = form.cleaned_data['user_name']
+			user_city = form.cleaned_data['user_city']
+			user_school = form.cleaned_data['user_school']
+			user_email = form.cleaned_data['user_email']
+			user_message = form.cleaned_data['user_message']
+			
+			mail_body = u'''
+網友姓名:{}
+居住城市:{}
+是否在學:{}
+反應意見如下:
+{}'''.format(user_name, user_city, user_school, user_message)
+
+
+			email = EmailMessage( '來自我的[心情告示板]網站的網友意見', mail_body, user_email, ['alex03108861@yahoo.com.tw'])
+			email.send()
+		else:
+			message = "請檢查您輸入的資訊是否正確! "
+	else:
+		form = forms.ContactForm()
+	return render(request, 'contact.html', locals())
+
+def post2db(request):
+	if request.method == 'POST':
+		post_form = forms.PostForm(request.POST)
+		if post_form.is_valid():
+			message = "您的訊息已儲存，待審核。"
+			post_form.save()
+		else:
+			message = "每個欄位都要填喔"
+	else:
+		post_form = forms.PostForm()
+		message = '如要張貼訊息，則每一欄都要填寫'
+
+	return render(request, 'post2db.html', locals())
