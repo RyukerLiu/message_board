@@ -1,1 +1,1 @@
-web: gunicorn ch08_test.wsgi --log-file -
+web: gunicorn message_board.wsgi --log-file -
