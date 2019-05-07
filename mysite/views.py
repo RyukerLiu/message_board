@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from mysite import models, forms
 from django.core.mail import EmailMessage
 
@@ -79,8 +79,8 @@ def post2db(request):
 	if request.method == 'POST':
 		post_form = forms.PostForm(request.POST)
 		if post_form.is_valid():
-			message = "您的訊息已儲存，待審核。"
 			post_form.save()
+			return redirect('/')
 		else:
 			message = "每個欄位都要填喔"
 	else:

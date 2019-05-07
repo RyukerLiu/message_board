@@ -7,7 +7,7 @@
 	<div class='alert alert-warning'>{{ message }}</div>
 {% endif %}
 
-<form name='my form' action='.' method='POST'>
+<form name='myform' action='.' method='POST'>
 	{% csrf_token %}
 	<table>
 	{{ post_form.as_table }}
