@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from mysite import models, forms
-from django.core.mail import EmailMessage
+from django.core.mail import send_mail, EmailMessage
+from django.conf import settings
 
 # Create your views here.
 def index(request):
@@ -61,14 +62,15 @@ def contact(request):
 			
 			mail_body = u'''
 網友姓名:{}
+網友信箱:{}
 居住城市:{}
 是否在學:{}
-反應意見如下:
-{}'''.format(user_name, user_city, user_school, user_message)
+反應意見如下:{}
+'''.format(user_name, user_email, user_city, user_school, user_message)
 
-
-			email = EmailMessage( '來自我的[心情告示板]網站的網友意見', mail_body, user_email, ['alex03108861@yahoo.com.tw'])
+			email = EmailMessage( '來自留言小天地網站的網友意見', mail_body, user_email, ['alex03100310@gmail.com'])
 			email.send()
+
 		else:
 			message = "請檢查您輸入的資訊是否正確! "
 	else:
@@ -88,3 +90,11 @@ def post2db(request):
 		message = '如要張貼訊息，則每一欄都要填寫'
 
 	return render(request, 'post2db.html', locals())
+	
+def email(request):
+    subject = 'Thank you for registering to our site'
+    message = ' it  means a world to us '
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['alex03100310@gmail.com',]
+    send_mail( subject, message, email_from, recipient_list )
+    return redirect('/')

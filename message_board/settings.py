@@ -124,11 +124,18 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-MAILGUN_ACCESS_KEY = '9dd6cfc68f9cc1bbdffaa14bbca17981-7bce17e5-528024b8'
-MAILGUN_SERVER_NAME = 'sandboxf7197f4221124565b983be532c29e8d0.mailgun.org'
-EMAIL_USE_TLS=True
-EMAIL_HOST= 'stmp.gmail.com'
-EMAIL_HOST_USER= 'alex03100310@gmail.com'
-EMAIL_HOST_PASSWORD= 's28825252'
-EMAIL_POST= 587
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+#with open('/etc/secret_key/mailgun.txt') as f:
+#	MAILGUN_ACCESS_KEY = f.read().strip()
+#MAILGUN_SERVER_NAME = 'sandboxf7197f4221124565b983be532c29e8d0.mailgun.org'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'alex03100310@gmail.com'
+with open('/etc/secret_key/gmail.txt') as f:
+	EMAIL_HOST_PASSWORD = f.read().strip()
+
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
