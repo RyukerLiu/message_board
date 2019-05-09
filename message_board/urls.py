@@ -22,7 +22,6 @@ urlpatterns = [
     path('', views.index),
     path('list/', views.listing),
     path('post2db/', views.post2db),
-    path('contact/', views.contact),
 	#path('email/', views.email),
     re_path(r'^captcha/', include('captcha.urls')),
 ]
